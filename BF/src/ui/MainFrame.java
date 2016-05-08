@@ -42,8 +42,9 @@ public class MainFrame extends JFrame {
 		newMenuItem.addActionListener(new MenuItemActionListener());
 		openMenuItem.addActionListener(new MenuItemActionListener());
 		saveMenuItem.addActionListener(new SaveActionListener());
-		runMenuItem.addActionListener(new MenuItemActionListener());
 		saveMenuItem.addActionListener(new MenuItemActionListener());//added code
+		runMenuItem.addActionListener(new MenuItemActionListener());
+		
 
 		textArea = new JTextArea();
 		textArea.setMargin(new Insets(10, 10, 10, 10));
@@ -69,13 +70,13 @@ public class MainFrame extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand();
 			if (cmd.equals("Open")) {
-				textArea.setText("Open");
+				resultLabel.setText("Opened");
 			} else if (cmd.equals("Save")) {
-				textArea.setText("This is saved");
+				resultLabel.setText("Saved");
 			} else if (cmd.equals("Run")) {
 				resultLabel.setText("Hello, result");
 			} else if(cmd.equals("New")){
-				textArea.setText("We should open a new file");
+				resultLabel.setText("A new file");
 			}
 		}
 	}
@@ -90,6 +91,15 @@ public class MainFrame extends JFrame {
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
 			}
+		}
+
+	}
+	class RunActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String code = textArea.getText();
+			RemoteHelper.getInstance().getExecuteService();
 		}
 
 	}
