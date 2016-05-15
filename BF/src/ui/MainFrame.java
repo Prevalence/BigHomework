@@ -74,13 +74,13 @@ public class MainFrame extends JFrame {
 			} else if (cmd.equals("Save")) {
 				resultLabel.setText("Saved");
 			} else if (cmd.equals("Run")) {
-				resultLabel.setText("Hello, result");
+				resultLabel.setText("Runned");
 			} else if(cmd.equals("New")){
 				resultLabel.setText("A new file");
 			}
 		}
 	}
-
+		//Save按钮应该实现的接口
 	class SaveActionListener implements ActionListener {
 
 		@Override
@@ -94,12 +94,18 @@ public class MainFrame extends JFrame {
 		}
 
 	}
+		//Run按钮应该实现的接口
 	class RunActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			String code = textArea.getText();
-			RemoteHelper.getInstance().getExecuteService();
+			String code=textArea.getText();
+			try {
+				RemoteHelper.getInstance().getExecuteService().execute(code, "000");
+			} catch (RemoteException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 
 	}

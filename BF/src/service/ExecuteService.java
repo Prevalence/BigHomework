@@ -1,4 +1,4 @@
-//è¯·ä¸è¦ä¿®æ”¹æœ¬æ–‡ä»¶å
+//Çë²»ÒªĞŞ¸Ä±¾ÎÄ¼şÃû
 package service;
 
 import java.rmi.Remote;
@@ -7,9 +7,9 @@ import java.rmi.RemoteException;
 public interface ExecuteService extends Remote {
 	
 	/**
-	 * æˆ‘ä»¬å°†é€šè¿‡æ­¤æ–¹æ³•æµ‹è¯•ä½ çš„è§£æå™¨åŠŸèƒ½ï¼Œè¯·ä¸è¦ä¿®æ”¹æ–¹æ³•åï¼Œå‚æ•°ç±»å‹ï¼Œè¿”å›å‚æ•°ç±»å‹
-	 * @param code bfæºä»£ç 
-	 * @return è¿è¡Œç»“æœ
+	 * ÎÒÃÇ½«Í¨¹ı´Ë·½·¨²âÊÔÄãµÄ½âÎöÆ÷¹¦ÄÜ£¬Çë²»ÒªĞŞ¸Ä·½·¨Ãû£¬²ÎÊıÀàĞÍ£¬·µ»Ø²ÎÊıÀàĞÍ
+	 * @param code bfÔ´´úÂë
+	 * @return ÔËĞĞ½á¹û
 	 * @throws RemoteException
 	 */
 	public String execute(String code, String param) throws RemoteException;
