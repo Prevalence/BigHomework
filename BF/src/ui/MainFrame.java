@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
@@ -46,15 +47,22 @@ public class MainFrame extends JFrame {
 		
 		
 		
-		paramtext=new JTextArea();
-		resultText=new JTextArea();
-		paramtext.setRows(5);
-		resultText.setRows(5);
-		splitpane.setResizeWeight(0.3);//设置两部分等分
+		paramtext=new JTextArea(3,15);
+		resultText=new JTextArea(3,15);
+		splitpane.setResizeWeight(0.5);//设置两部分等分
 		splitpane.setEnabled(false);
-		paramtext.setText("Please input the param");
-		splitpane.add(paramtext,JSplitPane.LEFT);
-		splitpane.add(resultText, JSplitPane.RIGHT);
+		JPanel leftpane=new JPanel();
+		JPanel rightpane=new JPanel();
+		JLabel paramlb=new JLabel ("param");
+		JLabel resultlb=new JLabel("result");
+		leftpane.add(paramlb,BorderLayout.NORTH);
+		leftpane.add(paramtext);
+		splitpane.add(leftpane,JSplitPane.LEFT);
+		rightpane.add(resultlb,BorderLayout.NORTH);
+		rightpane.add(resultText);
+		splitpane.add(rightpane, JSplitPane.RIGHT);
+		
+		
 		
 		
 
@@ -65,7 +73,7 @@ public class MainFrame extends JFrame {
 		runMenuItem.addActionListener(new MenuItemActionListener());
 		
 
-		codetext = new JTextArea("Please input the code",7,15);
+		codetext = new JTextArea("Please input the code",7,16);
 		codetext.setLineWrap(true);		//激活自动换行功能
 		codetext.setMargin(new Insets(10, 10, 10, 10));
 		codetext.setBackground(Color.WHITE);
@@ -99,7 +107,6 @@ public class MainFrame extends JFrame {
 			} else if (cmd.equals("Save")) {
 				resultLabel.setText("Saved");
 			} else if (cmd.equals("Run")) {
-				System.out.println("slvhosvno");
 				try {
 					RemoteHelper.getInstance().getExecuteService().execute(codetext.getText(), paramtext.getText());
 				} catch (RemoteException e1) {

@@ -13,7 +13,7 @@ public class RemoteHelper {
 		return remoteHelper;
 	}
 	
-	private RemoteHelper() {	//Default constructor?
+	private RemoteHelper() {	//Default constructor
 	}
 	
 	public void setRemote(Remote remote){
