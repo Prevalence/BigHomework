@@ -30,7 +30,7 @@ public class MainFrame extends JFrame {
 		// 鍒涘缓绐椾綋
 		JFrame frame = new JFrame("BF Client");
 		frame.setLayout(new BorderLayout());
-
+		
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
 		menuBar.add(fileMenu);
@@ -47,18 +47,18 @@ public class MainFrame extends JFrame {
 		
 		
 		
-		paramtext=new JTextArea(3,15);
-		resultText=new JTextArea(3,15);
+		paramtext=new JTextArea(2,15);
+		resultText=new JTextArea(2,15);
 		splitpane.setResizeWeight(0.5);//设置两部分等分
 		splitpane.setEnabled(false);
 		JPanel leftpane=new JPanel();
 		JPanel rightpane=new JPanel();
 		JLabel paramlb=new JLabel ("param");
 		JLabel resultlb=new JLabel("result");
-		leftpane.add(paramlb,BorderLayout.NORTH);
+		leftpane.add(BorderLayout.NORTH,paramlb);
 		leftpane.add(paramtext);
 		splitpane.add(leftpane,JSplitPane.LEFT);
-		rightpane.add(resultlb,BorderLayout.NORTH);
+		rightpane.add(BorderLayout.NORTH,resultlb);
 		rightpane.add(resultText);
 		splitpane.add(rightpane, JSplitPane.RIGHT);
 		
@@ -86,7 +86,7 @@ public class MainFrame extends JFrame {
 		// 鏄剧ず缁撴灉
 		resultLabel = new JLabel();
 		resultLabel.setText("result");
-		//frame.add(resultLabel, BorderLayout.SOUTH);
+		frame.add(resultLabel,BorderLayout.NORTH);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(500, 400);
@@ -108,6 +108,7 @@ public class MainFrame extends JFrame {
 				resultLabel.setText("Saved");
 			} else if (cmd.equals("Run")) {
 				try {
+					System.out.println("11111");
 					RemoteHelper.getInstance().getExecuteService().execute(codetext.getText(), paramtext.getText());
 				} catch (RemoteException e1) {
 					// TODO Auto-generated catch block

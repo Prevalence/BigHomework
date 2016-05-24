@@ -17,7 +17,9 @@ public class ExecuteServiceImpl implements ExecuteService {
 		ArrayList<String> input=new ArrayList<String>();
 		ArrayList<Integer> content=new ArrayList<Integer>();
 		int ptr=0;
-		String s=null;
+		String s="";
+		char[] result=new char[20];//结果char数组
+		int te=0;
 		
 		
 		
@@ -47,15 +49,10 @@ public class ExecuteServiceImpl implements ExecuteService {
 			switch(input.get(j)){
 				//打印出当前指针指向的值的Ascii码
 				case ".":{
-					if(content.get(ptr)==10)
-						{System.out.println();
-						break;
-						}
-					else
-					{s=content.get(ptr).toString();
-					System.out.print((char)Integer.parseInt(s));
+					s=content.get(ptr).toString();
+					result[te]=(char)Integer.parseInt(s);
+					te++;
 					break;
-				}
 				}
 				//输入参数的Ascii值到当前指针指向的单元
 				case",":{
@@ -106,9 +103,21 @@ public class ExecuteServiceImpl implements ExecuteService {
 					//System.out.println(content.get(ptr));//Test
 					break;
 				}
+			}
+		}
+			//以下模块实现返回结果字符串
+			String results="";
+			String temp=null;
+			for(int i=0;i<result.length;i++)
+			{
+				if(!(result[i]=='\0'))
+				{
+					temp=String.valueOf(result[i]);
+					results=results+temp;
 				}
-				}
-				return null;
+			
+			}
+			return results;
 	}
 }
 
