@@ -108,13 +108,15 @@ public class MainFrame extends JFrame {
 				resultLabel.setText("Saved");
 			} else if (cmd.equals("Run")) {
 				try {
-					System.out.println("11111");
-					RemoteHelper.getInstance().getExecuteService().execute(codetext.getText(), paramtext.getText());
+					String re=RemoteHelper.getInstance().getExecuteService().execute(codetext.getText(), paramtext.getText());
+					System.out.println(re);
+					resultText.setText(re);
+					resultLabel.setText("Runned");
 				} catch (RemoteException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				resultLabel.setText("Runned");
+				
 			} else if(cmd.equals("New")){
 				resultLabel.setText("A new file");
 			}
@@ -127,7 +129,7 @@ public class MainFrame extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			String code = codetext.getText();
 			try {
-				RemoteHelper.getInstance().getIOService().writeFile(code, "admin", "code");
+				RemoteHelper.getInstance().getIOService().writeFile(code, "300", "05");
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
 			}

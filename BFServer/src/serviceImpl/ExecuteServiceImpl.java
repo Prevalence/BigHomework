@@ -20,11 +20,15 @@ public class ExecuteServiceImpl implements ExecuteService {
 		String s="";
 		char[] result=new char[20];//结果char数组
 		int te=0;
+		ArrayList<String> para= new ArrayList<String>();
 		
 		
 		
-		
-		String[] paramSequ=param.split(",");//转化ascii有关
+		String[] paramSequ=param.split(" ");//一个参数的时候为参数本身，转化ascii有关
+		for(int i=0;i<paramSequ.length;i++){
+			para.add(paramSequ[i]);
+		}
+		para.add("\n");
 		int sequ=0;
 		
 		
@@ -58,7 +62,7 @@ public class ExecuteServiceImpl implements ExecuteService {
 				case",":{
 					//此时不能做字符与Ascii值之间的转换
 					//add到后面了，有bug,应该为修改这个初始化的格子的值
-					int ascii=paramSequ[sequ].toCharArray()[0];
+					int ascii=para.get(sequ).toCharArray()[0];
 					content.set(ptr,ascii);
 					//System.out.println(content.get(ptr));//Test
 					sequ++;

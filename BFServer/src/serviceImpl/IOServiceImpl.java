@@ -1,6 +1,9 @@
 package serviceImpl;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -10,8 +13,9 @@ public class IOServiceImpl implements IOService{
 	
 	@Override
 	public boolean writeFile(String file, String userId, String fileName) {
-		File f = new File(userId + "_" + fileName);
+		File f = new File("D:/IOExample",userId+"_"+fileName+".txt");
 		try {
+			f.createNewFile();//新建文件
 			FileWriter fw = new FileWriter(f, false);
 			fw.write(file);
 			System.out.println(file);//Added code----------------------------
@@ -26,12 +30,27 @@ public class IOServiceImpl implements IOService{
 
 	@Override
 	public String readFile(String userId, String fileName) {
+		File f=new File("D:/IOExample",userId+"_"+fileName+".txt");
+		String content=null;
+		try {
+			FileReader fr=new FileReader(f);
+			BufferedReader bfr=new BufferedReader(fr);
+			content=bfr.readLine();
+			System.out.println(content);
+			bfr.close();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			return content;
 		// TODO Auto-generated method stub
-		return "OK";
+		
 	}
 
 	@Override
 	public String readFileList(String userId) {
+		
 		// TODO Auto-generated method stub
 		return "OK";
 	}
