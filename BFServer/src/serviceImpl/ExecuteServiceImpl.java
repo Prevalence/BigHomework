@@ -25,10 +25,15 @@ public class ExecuteServiceImpl implements ExecuteService {
 		
 		
 		String[] paramSequ=param.split(" ");//一个参数的时候为参数本身，转化ascii有关
-		for(int i=0;i<paramSequ.length;i++){
-			para.add(paramSequ[i]);
+		if(paramSequ.length==1){
+			para.add(paramSequ[0]);
 		}
-		para.add("\n");
+		else{
+			para.add(paramSequ[0]);
+			para.add("char");
+			para.add(paramSequ[1]);
+		}
+		para.add("");
 		int sequ=0;
 		
 		
