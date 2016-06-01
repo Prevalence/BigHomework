@@ -33,7 +33,7 @@ public class ExecuteServiceImpl implements ExecuteService {
 			para.add("char");
 			para.add(paramSequ[1]);
 		}
-		para.add("");
+		para.add(" ");
 		int sequ=0;
 		
 		
@@ -69,7 +69,6 @@ public class ExecuteServiceImpl implements ExecuteService {
 					//add到后面了，有bug,应该为修改这个初始化的格子的值
 					int ascii=para.get(sequ).toCharArray()[0];
 					content.set(ptr,ascii);
-					//System.out.println(content.get(ptr));//Test
 					sequ++;
 					break;
 				}

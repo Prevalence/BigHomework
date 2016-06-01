@@ -6,7 +6,9 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -33,6 +35,8 @@ public class MainFrame extends JFrame {
 		
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
+		JMenu accountMenu=new JMenu("Account");
+		menuBar.add(accountMenu);
 		menuBar.add(fileMenu);
 		JMenuItem newMenuItem = new JMenuItem("New");
 		fileMenu.add(newMenuItem);
@@ -42,8 +46,17 @@ public class MainFrame extends JFrame {
 		fileMenu.add(saveMenuItem);
 		JMenuItem runMenuItem = new JMenuItem("Run");
 		fileMenu.add(runMenuItem);
+		JMenuItem loginMenuItem = new JMenuItem("Login");
+		accountMenu.add(loginMenuItem);
+		JMenuItem logoutMenuItem = new JMenuItem("Logout");
+		accountMenu.add(logoutMenuItem);
+		JMenuItem signMenuItem = new JMenuItem("Registration");
+		accountMenu.add(signMenuItem);
+		JMenuItem showMenuItem = new JMenuItem("ShowAccount");
+		accountMenu.add(showMenuItem);
 		frame.setJMenuBar(menuBar);
 		JSplitPane splitpane=new JSplitPane();
+		JButton b=new JButton("确定");
 		
 		
 		
@@ -62,6 +75,8 @@ public class MainFrame extends JFrame {
 		rightpane.add(resultText);
 		splitpane.add(rightpane, JSplitPane.RIGHT);
 		
+	
+		
 		
 		
 		
@@ -71,6 +86,9 @@ public class MainFrame extends JFrame {
 		openMenuItem.addActionListener(new MenuItemActionListener());
 		saveMenuItem.addActionListener(new SaveActionListener());
 		runMenuItem.addActionListener(new MenuItemActionListener());
+		loginMenuItem.addActionListener(new MenuItem2ActionListener());
+		logoutMenuItem.addActionListener(new MenuItem2ActionListener());
+		signMenuItem.addActionListener(new MenuItem2ActionListener());
 		
 
 		codetext = new JTextArea("Please input the code",7,16);
@@ -87,6 +105,7 @@ public class MainFrame extends JFrame {
 		resultLabel = new JLabel();
 		resultLabel.setText("result");
 		frame.add(resultLabel,BorderLayout.NORTH);
+		//frame.add(b, BorderLayout.EAST);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(500, 400);
@@ -98,12 +117,20 @@ public class MainFrame extends JFrame {
 		/**
 		 * 瀛愯彍鍗曞搷搴斾簨浠�
 		 */
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand();
 			if (cmd.equals("Open")) {
-				resultLabel.setText("Opened");
-				System.out.println("Open successfully.");
+				try {
+					resultLabel.setText("Opened");
+					String re=RemoteHelper.getInstance().getIOService().readFile("300", "05");
+					codetext.setText(re);
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
 			} else if (cmd.equals("Save")) {
 				resultLabel.setText("Saved");
 			} else if (cmd.equals("Run")) {
@@ -120,8 +147,53 @@ public class MainFrame extends JFrame {
 			} else if(cmd.equals("New")){
 				resultLabel.setText("A new file");
 			}
+			
 		}
 	}
+	
+	
+	class MenuItem2ActionListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			String cmd=e.getActionCommand();
+			String user=null;
+			 if(cmd.equals("Login")){
+				String regi=codetext.getText();
+				String u1=regi.split("\n")[0];
+				String p1=regi.split("\n")[1];
+				try {
+					boolean flag=RemoteHelper.getInstance().getUserService().login(u1, p1);
+					if(flag==true)
+						user=u1;
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			else if(cmd.equals("Logout")){
+				user=null;
+			}
+			else if(cmd.equals("Registration")){
+				System.out.println("regiing");
+				String regi=codetext.getText();
+				try {
+					RemoteHelper.getInstance().getUserService().registration(regi.split("\n")[0], regi.split("\n")[1]);
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			else if(cmd.equals("ShowAccount")){
+				System.out.println("showing");
+				//if(user!=null)
+					//codetext.setText("username: "+user);
+				//else
+				//	codetext.setText("Haven't logged in");
+			}
+		}
+	}
+	
+	
+	
 		//Save按钮应该实现的接口
 	class SaveActionListener implements ActionListener {
 

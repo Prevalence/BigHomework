@@ -18,7 +18,7 @@ public class DataRemoteObject extends UnicastRemoteObject implements IOService, 
 	private IOService iOService;
 	private UserService userService;
 	private ExecuteService executeService;
-	protected DataRemoteObject() throws RemoteException {//¹¹Ôì·½·¨£¬»áÊµÏÖServiceµÄ¾ßÌå·½·¨
+	protected DataRemoteObject() throws RemoteException {//ï¿½ï¿½ï¿½ì·½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½Serviceï¿½Ä¾ï¿½ï¿½å·½ï¿½ï¿½
 		iOService = new IOServiceImpl();
 		userService = new UserServiceImpl();
 		executeService=new ExecuteServiceImpl();
@@ -58,6 +58,12 @@ public class DataRemoteObject extends UnicastRemoteObject implements IOService, 
 	@Override
 	public String execute(String code, String param) throws RemoteException{
 		return executeService.execute(code, param);
+	}
+
+	@Override
+	public boolean registration(String username, String password) throws RemoteException {
+		// TODO Auto-generated method stub
+		return userService.registration(username, password);
 	}
 
 }
