@@ -6,7 +6,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,6 +17,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JOptionPane;
 
 import rmi.RemoteHelper;
 
@@ -27,17 +28,23 @@ public class MainFrame extends JFrame {
 	private JLabel resultLabel;
 	private JTextArea paramtext;
 	private JTextArea resultText;
+	String user=null;
+	String version="0";
 
 	public MainFrame() {
 		// 鍒涘缓绐椾綋
 		JFrame frame = new JFrame("BF Client");
 		frame.setLayout(new BorderLayout());
 		
+		
+		
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
 		JMenu accountMenu=new JMenu("Account");
+		JMenu versionMenu=new JMenu("Version");
 		menuBar.add(accountMenu);
 		menuBar.add(fileMenu);
+		menuBar.add(versionMenu);
 		JMenuItem newMenuItem = new JMenuItem("New");
 		fileMenu.add(newMenuItem);
 		JMenuItem openMenuItem = new JMenuItem("Open");
@@ -54,9 +61,16 @@ public class MainFrame extends JFrame {
 		accountMenu.add(signMenuItem);
 		JMenuItem showMenuItem = new JMenuItem("ShowAccount");
 		accountMenu.add(showMenuItem);
+		JMenuItem nextversion=new JMenuItem("Next Version");
+		versionMenu.add(nextversion);
+		JMenuItem lastversion=new JMenuItem("Last Version");
+		versionMenu.add(lastversion);
 		frame.setJMenuBar(menuBar);
 		JSplitPane splitpane=new JSplitPane();
 		JButton b=new JButton("确定");
+		
+		
+		
 		
 		
 		
@@ -89,7 +103,9 @@ public class MainFrame extends JFrame {
 		loginMenuItem.addActionListener(new MenuItem2ActionListener());
 		logoutMenuItem.addActionListener(new MenuItem2ActionListener());
 		signMenuItem.addActionListener(new MenuItem2ActionListener());
-		
+		showMenuItem.addActionListener(new MenuItem2ActionListener());
+		lastversion.addActionListener(new MenuItem3ActionListener());
+		nextversion.addActionListener(new MenuItem3ActionListener());
 
 		codetext = new JTextArea("Please input the code",7,16);
 		codetext.setLineWrap(true);		//激活自动换行功能
@@ -109,6 +125,7 @@ public class MainFrame extends JFrame {
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(500, 400);
+		frame.setLocationRelativeTo(null);
 		frame.setLocation(400, 200);
 		frame.setVisible(true);
 	}
@@ -123,9 +140,9 @@ public class MainFrame extends JFrame {
 			String cmd = e.getActionCommand();
 			if (cmd.equals("Open")) {
 				try {
-					resultLabel.setText("Opened");
-					String re=RemoteHelper.getInstance().getIOService().readFile("300", "05");
+					String re=RemoteHelper.getInstance().getIOService().readFile(user,version);
 					codetext.setText(re);
+					resultLabel.setText("Opened");
 				} catch (RemoteException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -155,43 +172,69 @@ public class MainFrame extends JFrame {
 	class MenuItem2ActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			String cmd=e.getActionCommand();
-			String user=null;
 			 if(cmd.equals("Login")){
-				String regi=codetext.getText();
-				String u1=regi.split("\n")[0];
-				String p1=regi.split("\n")[1];
-				try {
-					boolean flag=RemoteHelper.getInstance().getUserService().login(u1, p1);
-					if(flag==true)
-						user=u1;
-				} catch (RemoteException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				LoginWindow lw=new LoginWindow();
+				
 			}
 			else if(cmd.equals("Logout")){
 				user=null;
+				resultLabel.setText("Logged out!");
 			}
+			
 			else if(cmd.equals("Registration")){
-				System.out.println("regiing");
-				String regi=codetext.getText();
+					new RegWindow();
+				
+			}
+			else if(cmd.equals("ShowAccount")){
+				if(user!=null)
+					resultLabel.setText("username: "+user);
+				else
+					resultLabel.setText("Haven't logged in");
+			}
+			
+		}
+	}
+	
+	
+	
+	class MenuItem3ActionListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			String cmd=e.getActionCommand();
+			if(cmd.equals("Last Version")){
 				try {
-					RemoteHelper.getInstance().getUserService().registration(regi.split("\n")[0], regi.split("\n")[1]);
+					version=RemoteHelper.getInstance().getUserService().lastversion(version);
+					String re=RemoteHelper.getInstance().getIOService().readFile(user,version);
+					if(re.equals("Sorry,this version don't existed.")){
+						resultLabel.setText("Sorry,this version don't existed.");
+					}
+					else{
+					codetext.setText(re);
+					resultLabel.setText("Now is version "+Integer.valueOf(version));
+					}
 				} catch (RemoteException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
-			else if(cmd.equals("ShowAccount")){
-				System.out.println("showing");
-				//if(user!=null)
-					//codetext.setText("username: "+user);
-				//else
-				//	codetext.setText("Haven't logged in");
+			else if(cmd.equals("Next Version")){
+				try {
+					version=RemoteHelper.getInstance().getUserService().lastversion(version);
+					String re=RemoteHelper.getInstance().getIOService().readFile(user,version);
+					if(re.equals("Sorry,this version don't existed.")){
+						resultLabel.setText("Sorry,this version don't existed.");
+					}
+					else{
+					codetext.setText(re);
+					resultLabel.setText("Now is version "+Integer.valueOf(version));
+					}
+
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 	}
-	
 	
 	
 		//Save按钮应该实现的接口
@@ -200,11 +243,17 @@ public class MainFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String code = codetext.getText();
+			if(user!=null){
 			try {
-				RemoteHelper.getInstance().getIOService().writeFile(code, "300", "05");
+				version=String.valueOf(Integer.valueOf(version)+1);
+				RemoteHelper.getInstance().getIOService().writeFile(code, user, version);
+				
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
 			}
+			}
+			else
+				resultLabel.setText("Please log in");
 		}
 
 	}

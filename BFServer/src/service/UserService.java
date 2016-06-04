@@ -9,4 +9,6 @@ public interface UserService extends Remote{
 
 	public boolean logout(String username) throws RemoteException;
 	public boolean registration(String username,String password)throws RemoteException;
+	public String nextversion(String version)throws RemoteException;
+	public String lastversion(String version)throws RemoteException;
 }

@@ -15,7 +15,7 @@ public class IOServiceImpl implements IOService{
 	public boolean writeFile(String file, String userId, String fileName) {
 		File f = new File("D:/IOExample",userId+"_"+fileName+".txt");
 		try {
-			f.createNewFile();//ÐÂ½¨ÎÄ¼þ
+			f.createNewFile();//ï¿½Â½ï¿½ï¿½Ä¼ï¿½
 			FileWriter fw = new FileWriter(f, false);
 			fw.write(file);
 			System.out.println(file);//Added code----------------------------
@@ -31,6 +31,9 @@ public class IOServiceImpl implements IOService{
 	@Override
 	public String readFile(String userId, String fileName) {
 		File f=new File("D:/IOExample",userId+"_"+fileName+".txt");
+		if(!f.exists()){
+			return "Sorry,this version don't existed.";
+		}
 		String content=null;
 		try {
 			FileReader fr=new FileReader(f);

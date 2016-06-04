@@ -66,4 +66,16 @@ public class DataRemoteObject extends UnicastRemoteObject implements IOService, 
 		return userService.registration(username, password);
 	}
 
+	@Override
+	public String nextversion(String version) throws RemoteException {
+		// TODO Auto-generated method stub
+		return userService.nextversion(version);
+	}
+
+	@Override
+	public String lastversion(String version) throws RemoteException {
+		// TODO Auto-generated method stub
+		return userService.lastversion(version);
+	}
+
 }
