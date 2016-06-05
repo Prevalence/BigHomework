@@ -28,8 +28,11 @@ public class MainFrame extends JFrame {
 	private JLabel resultLabel;
 	private JTextArea paramtext;
 	private JTextArea resultText;
-	String user=null;
+	static String user=null;
 	String version="0";
+	public static void setuser(String username){
+		user=username;
+	}
 
 	public MainFrame() {
 		// 鍒涘缓绐椾綋
@@ -174,9 +177,9 @@ public class MainFrame extends JFrame {
 			String cmd=e.getActionCommand();
 			 if(cmd.equals("Login")){
 				LoginWindow lw=new LoginWindow();
-				
+				//s=lw.get();
 			}
-			else if(cmd.equals("Logout")){
+			 if(cmd.equals("Logout")){
 				user=null;
 				resultLabel.setText("Logged out!");
 			}
