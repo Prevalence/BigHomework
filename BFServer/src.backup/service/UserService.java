@@ -1,4 +1,4 @@
-//鏈嶅姟鍣║serService鐨凷tub锛屽唴�?�圭浉鍚�?
+//�?要客户端的Stub
 package service;
 
 import java.rmi.Remote;

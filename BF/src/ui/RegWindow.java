@@ -57,6 +57,7 @@ public class RegWindow extends JFrame {
 				}
 				JOptionPane=new JOptionPane();
 				JOptionPane.showMessageDialog(null,"注册成功！");
+				dispose();
 			}
 		
 	}

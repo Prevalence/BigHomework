@@ -63,12 +63,12 @@ public class LoginWindow extends JFrame{
 				try {
 					boolean flag=RemoteHelper.getInstance().getUserService().login(t1.getText(),t2.getText());
 					if(flag){
-						JOptionPane.showMessageDialog(null,"登录成功！");
+						JOptionPane.showMessageDialog(null,"登录成功�?");
 						MainFrame.setuser(t1.getText());
 						dispose();
 					}
 					else{
-						JOptionPane.showMessageDialog(null, "账户或密码错误", "",JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "账户或密码错�?", "",JOptionPane.ERROR_MESSAGE);
 					}
 				} catch (RemoteException e1) {
 					// TODO Auto-generated catch block

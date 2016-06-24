@@ -12,7 +12,7 @@ import ui.MainFrame;
 public class ClientRunner {
 	private RemoteHelper remoteHelper;
 	
-	public ClientRunner() {
+	public ClientRunner() {//构造方法，建立了一个界面
 		linkToServer();
 		initGUI();
 	}
@@ -20,6 +20,7 @@ public class ClientRunner {
 	private void linkToServer() {
 		try {
 			remoteHelper = RemoteHelper.getInstance();
+			//把远程对象注册到RMI注册服务器上，并命名为DataRemoteObject?
 			remoteHelper.setRemote(Naming.lookup("rmi://localhost:8888/DataRemoteObject"));
 			System.out.println("linked");
 		} catch (MalformedURLException e) {
@@ -44,7 +45,7 @@ public class ClientRunner {
 		}
 	}
 	
-	public static void main(String[] args){
+	public static void main(String[] args){//主程序
 		ClientRunner cr = new ClientRunner();
 		//cr.test();
 	}

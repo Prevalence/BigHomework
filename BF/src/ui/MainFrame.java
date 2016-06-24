@@ -29,11 +29,19 @@ public class MainFrame extends JFrame {
 	private JTextArea paramtext;
 	private JTextArea resultText;
 	static String user=null;
+	public static String filename;
 	String version="0";
+	
+	
+	
 	public static void setuser(String username){
 		user=username;
 	}
-
+	public static void setfilename(String Filename){
+		filename=Filename;
+	}
+	
+	
 	public MainFrame() {
 		// 鍒涘缓绐椾綋
 		JFrame frame = new JFrame("BF Client");
@@ -52,8 +60,12 @@ public class MainFrame extends JFrame {
 		fileMenu.add(newMenuItem);
 		JMenuItem openMenuItem = new JMenuItem("Open");
 		fileMenu.add(openMenuItem);
-		JMenuItem saveMenuItem = new JMenuItem("Save");
-		fileMenu.add(saveMenuItem);
+		JMenu saveMenu = new JMenu("Save");
+		fileMenu.add(saveMenu);
+		JMenuItem saveversion=new JMenuItem("save as a version");
+		saveMenu.add(saveversion);
+		JMenuItem savefile=new JMenuItem("save as a file");
+		saveMenu.add(savefile);
 		JMenuItem runMenuItem = new JMenuItem("Run");
 		fileMenu.add(runMenuItem);
 		JMenuItem loginMenuItem = new JMenuItem("Login");
@@ -68,30 +80,31 @@ public class MainFrame extends JFrame {
 		versionMenu.add(nextversion);
 		JMenuItem lastversion=new JMenuItem("Last Version");
 		versionMenu.add(lastversion);
+		JMenuItem listversion=new JMenuItem("Version List");
+		versionMenu.add(listversion);
 		frame.setJMenuBar(menuBar);
 		JSplitPane splitpane=new JSplitPane();
-		JButton b=new JButton("确定");
 		
 		
 		
 		
 		
 		
-		paramtext=new JTextArea(2,15);
-		resultText=new JTextArea(2,15);
+		paramtext=new JTextArea(5,25);
+		resultText=new JTextArea(5,25);
 		splitpane.setResizeWeight(0.5);//设置两部分等分
 		splitpane.setEnabled(false);
 		JPanel leftpane=new JPanel();
 		JPanel rightpane=new JPanel();
 		JLabel paramlb=new JLabel ("param");
 		JLabel resultlb=new JLabel("result");
-		leftpane.add(BorderLayout.NORTH,paramlb);
+		leftpane.add(BorderLayout.WEST,paramlb);
 		leftpane.add(paramtext);
 		splitpane.add(leftpane,JSplitPane.LEFT);
-		rightpane.add(BorderLayout.NORTH,resultlb);
+		rightpane.add(BorderLayout.WEST,resultlb);
 		rightpane.add(resultText);
 		splitpane.add(rightpane, JSplitPane.RIGHT);
-		
+		frame.add(splitpane,BorderLayout.SOUTH);
 	
 		
 		
@@ -101,7 +114,8 @@ public class MainFrame extends JFrame {
 		//注册监听的时候，new open run都是作为MenuItem来传入的。
 		newMenuItem.addActionListener(new MenuItemActionListener());
 		openMenuItem.addActionListener(new MenuItemActionListener());
-		saveMenuItem.addActionListener(new SaveActionListener());
+		savefile.addActionListener(new SaveActionListener());
+		saveversion.addActionListener(new SaveActionListener());
 		runMenuItem.addActionListener(new MenuItemActionListener());
 		loginMenuItem.addActionListener(new MenuItem2ActionListener());
 		logoutMenuItem.addActionListener(new MenuItem2ActionListener());
@@ -109,6 +123,7 @@ public class MainFrame extends JFrame {
 		showMenuItem.addActionListener(new MenuItem2ActionListener());
 		lastversion.addActionListener(new MenuItem3ActionListener());
 		nextversion.addActionListener(new MenuItem3ActionListener());
+		listversion.addActionListener(new MenuItem3ActionListener());
 
 		codetext = new JTextArea("Please input the code",7,16);
 		codetext.setLineWrap(true);		//激活自动换行功能
@@ -118,18 +133,18 @@ public class MainFrame extends JFrame {
 		
 		
 		
-		frame.add(splitpane,BorderLayout.SOUTH);
+		
 
 		// 鏄剧ず缁撴灉
-		resultLabel = new JLabel();
-		resultLabel.setText("result");
-		frame.add(resultLabel,BorderLayout.NORTH);
-		//frame.add(b, BorderLayout.EAST);
+		//resultLabel = new JLabel();
+		//resultLabel.setText("result");
+		//frame.add(resultLabel,BorderLayout.NORTH);
+		
+		
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(500, 400);
+		frame.setSize(800, 700);
 		frame.setLocationRelativeTo(null);
-		frame.setLocation(400, 200);
 		frame.setVisible(true);
 	}
 
@@ -165,7 +180,13 @@ public class MainFrame extends JFrame {
 				}
 				
 			} else if(cmd.equals("New")){
-				resultLabel.setText("A new file");
+				if(user!=null)
+					new filenaming();
+				else{
+					JOptionPane a=new JOptionPane();
+					a.showMessageDialog(null, "尚未登录", "",JOptionPane.ERROR_MESSAGE);
+				}
+					
 			}
 			
 		}
@@ -176,8 +197,7 @@ public class MainFrame extends JFrame {
 		public void actionPerformed(ActionEvent e){
 			String cmd=e.getActionCommand();
 			 if(cmd.equals("Login")){
-				LoginWindow lw=new LoginWindow();
-				//s=lw.get();
+				new LoginWindow();
 			}
 			 if(cmd.equals("Logout")){
 				user=null;
@@ -236,6 +256,9 @@ public class MainFrame extends JFrame {
 					e1.printStackTrace();
 				}
 			}
+			else if(cmd.equals("Version List")){
+				new versionlist();
+			}
 		}
 	}
 	
@@ -246,10 +269,15 @@ public class MainFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String code = codetext.getText();
+			String cmd=e.getActionCommand();
 			if(user!=null){
 			try {
+				if(cmd.equals("save as a file")){
+				RemoteHelper.getInstance().getIOService().writeFile(code, user, filename+"0");
+				}
+				if(cmd.equals("save as a version"))//版本数字上升，需要知道当前版本的maximum
+					RemoteHelper.getInstance().getIOService().writeFile(code, user, filename+"0");
 				version=String.valueOf(Integer.valueOf(version)+1);
-				RemoteHelper.getInstance().getIOService().writeFile(code, user, version);
 				
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
