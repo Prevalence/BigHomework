@@ -3,6 +3,7 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -10,6 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import rmi.RemoteHelper;
 
 public class filenaming extends JFrame{
 	JLabel l;
@@ -41,8 +44,15 @@ public class filenaming extends JFrame{
 	
 	class acActionListener implements ActionListener{
   public void actionPerformed(ActionEvent e){
+	  try {
+		RemoteHelper.getInstance().getIOService().writeFile(MainFrame.getcode(), MainFrame.getuser(), t.getText());
+	} catch (RemoteException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+	  JOptionPane.showMessageDialog(null,"创建成功");
 	  MainFrame.setfilename(t.getText());
-	  JOptionPane.showMessageDialog(null,"新建完成！");
+	  MainFrame.setversion("0");
 	  dispose();
   }
 }

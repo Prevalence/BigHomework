@@ -12,10 +12,11 @@ import service.IOService;
 public class IOServiceImpl implements IOService{
 	
 	@Override
-	public boolean writeFile(String file, String userId, String fileName) {
-		File f = new File("D:/IOExample/"+userId);
-		f.mkdir();
-		File f2=new File("D:/IOExample/"+userId,fileName+".txt");
+	public boolean writeFile(String file, String userId, String fileName) {//此时的filename其实是filename+"_"+version
+		String justfileName=fileName.split("_")[0];
+		File f = new File("D:/IOExample/"+userId+"/"+justfileName);
+		System.out.println(f.mkdirs());
+		File f2=new File("D:/IOExample/"+userId+"/"+justfileName,fileName+".txt");
 		if(!f2.exists()){
 			try {
 				f2.createNewFile();
@@ -35,8 +36,15 @@ public class IOServiceImpl implements IOService{
 
 
 	@Override
-	public String readFile(String userId, String fileName) {
-		File f=new File("D:/IOExample",userId+"_"+fileName+".txt");
+	public String readFile(String userId, String fileName) {//此处的filename其实传入的是filename+"_"+version
+		String justfileName=fileName.split("_")[0];
+		File f=new File("D:/IOExample/"+userId+"/"+justfileName,fileName+".txt");
+		try {
+			f.createNewFile();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		if(!f.exists()){
 			return "Sorry,this version don't existed.";
 		}
@@ -45,7 +53,6 @@ public class IOServiceImpl implements IOService{
 			FileReader fr=new FileReader(f);
 			BufferedReader bfr=new BufferedReader(fr);
 			content=bfr.readLine();
-			System.out.println(content);
 			bfr.close();
 			
 		} catch (IOException e) {

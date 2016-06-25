@@ -24,29 +24,49 @@ import rmi.RemoteHelper;
 
 
 public class MainFrame extends JFrame {
-	private JTextArea codetext;
+	private static JTextArea codetext;
 	private JLabel resultLabel;
 	private JTextArea paramtext;
 	private JTextArea resultText;
 	static String user=null;
-	public static String filename;
-	String version="0";
+	static String filename;
+	public static String version="0";
 	
 	
 	
-	public static void setuser(String username){
+	 static void setuser(String username){
 		user=username;
 	}
-	public static void setfilename(String Filename){
+	 static void setfilename(String Filename){
 		filename=Filename;
 	}
-	
+	 static String getcode(){
+		return codetext.getText();
+	}
+	 static void setcode(String str){
+		 codetext.setText(str);
+	 }
+	static String getuser(){
+		return user;
+	}
+	void setTit(String title){
+		this.setTitle(title);
+	}
+	static String getfilename(){
+		return filename;
+	}
+	static void setversion(String str){
+		version=str;
+	}
+	static String getversion(){
+		return version;
+	}
 	
 	public MainFrame() {
 		// 鍒涘缓绐椾綋
 		JFrame frame = new JFrame("BF Client");
 		frame.setLayout(new BorderLayout());
-		
+		setTit("BrainFuck");
 		
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -64,7 +84,7 @@ public class MainFrame extends JFrame {
 		fileMenu.add(saveMenu);
 		JMenuItem saveversion=new JMenuItem("save as a version");
 		saveMenu.add(saveversion);
-		JMenuItem savefile=new JMenuItem("save as a file");
+		JMenuItem savefile=new JMenuItem("save as a new file");
 		saveMenu.add(savefile);
 		JMenuItem runMenuItem = new JMenuItem("Run");
 		fileMenu.add(runMenuItem);
@@ -74,8 +94,6 @@ public class MainFrame extends JFrame {
 		accountMenu.add(logoutMenuItem);
 		JMenuItem signMenuItem = new JMenuItem("Registration");
 		accountMenu.add(signMenuItem);
-		JMenuItem showMenuItem = new JMenuItem("ShowAccount");
-		accountMenu.add(showMenuItem);
 		JMenuItem nextversion=new JMenuItem("Next Version");
 		versionMenu.add(nextversion);
 		JMenuItem lastversion=new JMenuItem("Last Version");
@@ -120,7 +138,6 @@ public class MainFrame extends JFrame {
 		loginMenuItem.addActionListener(new MenuItem2ActionListener());
 		logoutMenuItem.addActionListener(new MenuItem2ActionListener());
 		signMenuItem.addActionListener(new MenuItem2ActionListener());
-		showMenuItem.addActionListener(new MenuItem2ActionListener());
 		lastversion.addActionListener(new MenuItem3ActionListener());
 		nextversion.addActionListener(new MenuItem3ActionListener());
 		listversion.addActionListener(new MenuItem3ActionListener());
@@ -157,14 +174,10 @@ public class MainFrame extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand();
 			if (cmd.equals("Open")) {
-				try {
-					String re=RemoteHelper.getInstance().getIOService().readFile(user,version);
-					codetext.setText(re);
-					resultLabel.setText("Opened");
-				} catch (RemoteException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				if(user.equals(null)){
+					JOptionPane.showMessageDialog(null, "请先登录", "",JOptionPane.ERROR_MESSAGE);
+				}else
+				new openwindow();
 
 			} else if (cmd.equals("Save")) {
 				resultLabel.setText("Saved");
@@ -173,24 +186,20 @@ public class MainFrame extends JFrame {
 					String re=RemoteHelper.getInstance().getExecuteService().execute(codetext.getText(), paramtext.getText());
 					System.out.println(re);
 					resultText.setText(re);
-					resultLabel.setText("Runned");
 				} catch (RemoteException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				
 			} else if(cmd.equals("New")){
-				if(user!=null)
-					new filenaming();
-				else{
-					JOptionPane a=new JOptionPane();
-					a.showMessageDialog(null, "尚未登录", "",JOptionPane.ERROR_MESSAGE);
+				 codetext.setText("");
+				 setTit("未命名");
 				}
 					
 			}
 			
 		}
-	}
+	
 	
 	
 	class MenuItem2ActionListener implements ActionListener{
@@ -201,20 +210,12 @@ public class MainFrame extends JFrame {
 			}
 			 if(cmd.equals("Logout")){
 				user=null;
-				resultLabel.setText("Logged out!");
 			}
 			
 			else if(cmd.equals("Registration")){
 					new RegWindow();
 				
 			}
-			else if(cmd.equals("ShowAccount")){
-				if(user!=null)
-					resultLabel.setText("username: "+user);
-				else
-					resultLabel.setText("Haven't logged in");
-			}
-			
 		}
 	}
 	
@@ -225,14 +226,15 @@ public class MainFrame extends JFrame {
 			String cmd=e.getActionCommand();
 			if(cmd.equals("Last Version")){
 				try {
-					version=RemoteHelper.getInstance().getUserService().lastversion(version);
-					String re=RemoteHelper.getInstance().getIOService().readFile(user,version);
+						version=String.valueOf(Integer.valueOf(version)-1);
+						System.out.println(version);
+						String re=RemoteHelper.getInstance().getIOService().readFile(user,filename+"_"+version);
 					if(re.equals("Sorry,this version don't existed.")){
-						resultLabel.setText("Sorry,this version don't existed.");
+						version=String.valueOf(Integer.valueOf(version)+1);
+						JOptionPane.showMessageDialog(null, "无此版本", "",JOptionPane.ERROR_MESSAGE);
 					}
 					else{
 					codetext.setText(re);
-					resultLabel.setText("Now is version "+Integer.valueOf(version));
 					}
 				} catch (RemoteException e1) {
 					// TODO Auto-generated catch block
@@ -241,14 +243,14 @@ public class MainFrame extends JFrame {
 			}
 			else if(cmd.equals("Next Version")){
 				try {
-					version=RemoteHelper.getInstance().getUserService().lastversion(version);
-					String re=RemoteHelper.getInstance().getIOService().readFile(user,version);
+					version=String.valueOf(Integer.valueOf(version)+1);
+					String re=RemoteHelper.getInstance().getIOService().readFile(user,filename+"_"+version);
 					if(re.equals("Sorry,this version don't existed.")){
-						resultLabel.setText("Sorry,this version don't existed.");
+						version=String.valueOf(Integer.valueOf(version)-1);
+						JOptionPane.showMessageDialog(null, "无此版本", "",JOptionPane.ERROR_MESSAGE);
 					}
 					else{
 					codetext.setText(re);
-					resultLabel.setText("Now is version "+Integer.valueOf(version));
 					}
 
 				} catch (RemoteException e1) {
@@ -272,21 +274,24 @@ public class MainFrame extends JFrame {
 			String cmd=e.getActionCommand();
 			if(user!=null){
 			try {
-				if(cmd.equals("save as a file")){
-				RemoteHelper.getInstance().getIOService().writeFile(code, user, filename+"0");
+				if(cmd.equals("save as a new file")){
+					new filenaming();
+					setTit(filename);
+					setversion("0");
 				}
-				if(cmd.equals("save as a version"))//版本数字上升，需要知道当前版本的maximum
-					RemoteHelper.getInstance().getIOService().writeFile(code, user, filename+"0");
-				version=String.valueOf(Integer.valueOf(version)+1);
+				if(cmd.equals("save as a version")){//版本数字上升，需要知道当前版本的maximum
+					version=String.valueOf(Integer.valueOf(version)+1);
+					RemoteHelper.getInstance().getIOService().writeFile(code, user, filename+"_"+version);
+				}
 				
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
 			}
 			}
 			else
-				resultLabel.setText("Please log in");
+				JOptionPane.showMessageDialog(null, "请先登录", "",JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
-	
 }
+

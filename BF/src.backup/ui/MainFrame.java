@@ -24,29 +24,40 @@ import rmi.RemoteHelper;
 
 
 public class MainFrame extends JFrame {
-	private JTextArea codetext;
+	private static JTextArea codetext;
 	private JLabel resultLabel;
 	private JTextArea paramtext;
 	private JTextArea resultText;
 	static String user=null;
-	public static String filename;
+	static String filename;
 	String version="0";
 	
 	
 	
-	public static void setuser(String username){
+	 static void setuser(String username){
 		user=username;
 	}
-	public static void setfilename(String Filename){
+	 static void setfilename(String Filename){
 		filename=Filename;
 	}
-	
+	 static String getcode(){
+		return codetext.getText();
+	}
+	static String getuser(){
+		return user;
+	}
+	void setTit(String title){
+		this.setTitle(title);
+	}
+	static String getfilename(){
+		return filename;
+	}
 	
 	public MainFrame() {
 		// 鍒涘缓绐椾綋
 		JFrame frame = new JFrame("BF Client");
 		frame.setLayout(new BorderLayout());
-		
+		setTit("BrainFuck");
 		
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -64,7 +75,7 @@ public class MainFrame extends JFrame {
 		fileMenu.add(saveMenu);
 		JMenuItem saveversion=new JMenuItem("save as a version");
 		saveMenu.add(saveversion);
-		JMenuItem savefile=new JMenuItem("save as a file");
+		JMenuItem savefile=new JMenuItem("save as a new file");
 		saveMenu.add(savefile);
 		JMenuItem runMenuItem = new JMenuItem("Run");
 		fileMenu.add(runMenuItem);
@@ -180,17 +191,14 @@ public class MainFrame extends JFrame {
 				}
 				
 			} else if(cmd.equals("New")){
-				if(user!=null)
-					new filenaming();
-				else{
-					JOptionPane a=new JOptionPane();
-					a.showMessageDialog(null, "尚未登录", "",JOptionPane.ERROR_MESSAGE);
+				 codetext.setText("");
+				 setTit("未命�?");
 				}
 					
 			}
 			
 		}
-	}
+	
 	
 	
 	class MenuItem2ActionListener implements ActionListener{
@@ -201,20 +209,12 @@ public class MainFrame extends JFrame {
 			}
 			 if(cmd.equals("Logout")){
 				user=null;
-				resultLabel.setText("Logged out!");
 			}
 			
 			else if(cmd.equals("Registration")){
 					new RegWindow();
 				
 			}
-			else if(cmd.equals("ShowAccount")){
-				if(user!=null)
-					resultLabel.setText("username: "+user);
-				else
-					resultLabel.setText("Haven't logged in");
-			}
-			
 		}
 	}
 	
@@ -272,11 +272,12 @@ public class MainFrame extends JFrame {
 			String cmd=e.getActionCommand();
 			if(user!=null){
 			try {
-				if(cmd.equals("save as a file")){
-				RemoteHelper.getInstance().getIOService().writeFile(code, user, filename+"0");
+				if(cmd.equals("save as a new file")){
+					new filenaming();
+					setTit(filename);
 				}
 				if(cmd.equals("save as a version"))//版本数字上升，需要知道当前版本的maximum
-					RemoteHelper.getInstance().getIOService().writeFile(code, user, filename+"0");
+					RemoteHelper.getInstance().getIOService().writeFile(code, user, filename+"");
 				version=String.valueOf(Integer.valueOf(version)+1);
 				
 			} catch (RemoteException e1) {
@@ -284,9 +285,8 @@ public class MainFrame extends JFrame {
 			}
 			}
 			else
-				resultLabel.setText("Please log in");
+				JOptionPane.showMessageDialog(null, "请先登录", "",JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
-	
 }
